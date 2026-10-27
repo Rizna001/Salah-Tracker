@@ -1,1 +1,72 @@
 @import "tailwindcss";
+
+@theme {
+  --color-dark-900: #00160D;
+  --color-dark-700: #003D2B;
+  --color-dark-500: #005A3C;
+  --color-gold: #D4AF37;
+  --color-gold-light: #F4D03F;
+  --color-gold-dark: #B8860B;
+}
+
+body {
+  background-color: #00160D;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.golden-gradient {
+  background: linear-gradient(135deg, #D4AF37, #F4D03F, #D4AF37);
+}
+
+.golden-text {
+  background: linear-gradient(135deg, #D4AF37, #F4D03F, #B8860B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-glow {
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.1), 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.prayer-complete {
+  animation: pulse-gold 0.5s ease-out;
+}
+
+@keyframes pulse-gold {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.star-pattern {
+  background-image: radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+                    radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #00160D;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #005A3C;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}
