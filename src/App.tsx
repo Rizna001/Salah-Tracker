@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Language, LANGUAGES, t } from './translations';
 import { playPrayerCompleteSound, playGoalAchievedSound, playPrayerReminderSound, playClickSound } from './sounds';
+import FlutterGuide from './FlutterGuide';
 
 type PrayerName = 'Fajr' | 'Dhuhr' | 'Asr' | 'Maghrib' | 'Isha';
 type Theme = 'dark' | 'light';
@@ -102,6 +103,7 @@ export default function App() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showFlutterGuide, setShowFlutterGuide] = useState(false);
   const [prayerReminder, setPrayerReminder] = useState<string | null>(null);
 
   const isRTL = LANGUAGES.find(l => l.code === lang)?.dir === 'rtl';
@@ -218,6 +220,72 @@ export default function App() {
   const monthTotal = monthDates.length * 5;
   const monthPercentage = monthTotal > 0 ? Math.round((monthCompletion / monthTotal) * 100) : 0;
 
+  // Flutter WebView Bridge - allows communication with native Flutter app
+  useEffect(() => {
+    // Expose a global bridge object for Flutter to call
+    (window as any).SalahTrackerBridge = {
+      setLanguage: (langCode: string) => {
+        setLang(langCode as Language);
+      },
+      setTheme: (themeVal: string) => {
+        setTheme(themeVal as 'dark' | 'light');
+      },
+      getRecords: () => {
+        return JSON.stringify(records);
+      },
+      getStats: () => {
+        return JSON.stringify({
+          todayCompleted,
+          streak,
+          monthPercentage,
+        });
+      },
+    };
+
+    // Listen for messages from Flutter WebView
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && typeof event.data === 'object') {
+        if (event.data.theme) {
+          setTheme(event.data.theme as 'dark' | 'light');
+        }
+        if (event.data.language) {
+          setLang(event.data.language as Language);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    // Notify Flutter that the app is ready
+    if ((window as any).SalahTracker) {
+      (window as any).SalahTracker.postMessage(JSON.stringify({
+        type: 'app_ready',
+        version: '1.0.0',
+        languages: LANGUAGES.map(l => l.code),
+      }));
+    }
+
+    return () => window.removeEventListener('message', handleMessage);
+  }, [records, todayCompleted, streak, monthPercentage]);
+
+  // Send events to Flutter when prayers are completed
+  useEffect(() => {
+    if ((window as any).SalahTracker && todayCompleted > 0) {
+      (window as any).SalahTracker.postMessage(JSON.stringify({
+        type: 'stats_updated',
+        todayCompleted,
+        streak,
+        monthPercentage,
+      }));
+    }
+    if (showGoalModal && (window as any).SalahTracker) {
+      (window as any).SalahTracker.postMessage(JSON.stringify({
+        type: 'goal_achieved',
+        date: today,
+      }));
+    }
+  }, [todayCompleted, showGoalModal, streak, monthPercentage, today]);
+
   const enableNotifications = async () => {
     if ('Notification' in window) {
       const permission = await Notification.requestPermission();
@@ -278,6 +346,14 @@ export default function App() {
               <p className={`${tc.textSecondary} text-sm mt-0.5`}>{t(lang, 'subtitle')}</p>
             </div>
             <div className="flex items-center gap-2">
+              {/* Flutter Integration Button */}
+              <button
+                onClick={() => { setShowFlutterGuide(true); if (soundEnabled) playClickSound(); }}
+                className={`w-10 h-10 rounded-full ${tc.bgSecondary} border ${tc.border} flex items-center justify-center transition-all hover:scale-105`}
+                title="Flutter Integration"
+              >
+                <span className="text-lg">📱</span>
+              </button>
               {/* Settings Button */}
               <button
                 onClick={() => { setShowSettings(!showSettings); if (soundEnabled) playClickSound(); }}
@@ -668,6 +744,15 @@ export default function App() {
         </div>
       )}
 
+      {/* Flutter Integration Guide */}
+      {showFlutterGuide && (
+        <FlutterGuide
+          lang={lang}
+          theme={theme}
+          onClose={() => setShowFlutterGuide(false)}
+        />
+      )}
+
       {/* Footer */}
       <footer className="max-w-lg mx-auto px-4 py-6 text-center">
         <p className={`text-xs ${tc.textFaint}`}>
@@ -676,6 +761,18 @@ export default function App() {
         <p className={`text-[10px] ${tc.textFaint} mt-1`}>
           {t(lang, 'quranVerse')}
         </p>
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <button
+            onClick={() => { setShowFlutterGuide(true); if (soundEnabled) playClickSound(); }}
+            className={`text-[10px] px-3 py-1.5 rounded-full border ${tc.border} ${tc.textMuted} hover:border-[#D4AF37]/30 hover:${tc.gold} transition-all flex items-center gap-1.5`}
+          >
+            <span>📱</span>
+            {lang === 'ta' ? 'Flutter ஒருங்கிணைப்பு' :
+             lang === 'ml' ? 'ഫ്ലട്ടർ ഏകീകരണം' :
+             lang === 'ar' ? 'تكامل فلاتر' :
+             'Flutter Integration'}
+          </button>
+        </div>
       </footer>
     </div>
   );

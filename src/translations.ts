@@ -46,6 +46,7 @@ export const translations: Record<Language, Record<string, string>> = {
     enableNotifications: 'Enable Notifications',
     notificationEnabled: 'Notifications Enabled',
     prayerTimeAlert: 'Prayer Time',
+    flutterIntegration: 'Flutter Integration',
   },
   ta: {
     title: 'தொழுகை கண்காணிப்பு',
@@ -85,6 +86,7 @@ export const translations: Record<Language, Record<string, string>> = {
     enableNotifications: 'அறிவிப்புகளை இயக்கு',
     notificationEnabled: 'அறிவிப்புகள் இயக்கப்பட்டன',
     prayerTimeAlert: 'தொழுகை நேரம்',
+    flutterIntegration: 'Flutter ஒருங்கிணைப்பு',
   },
   ml: {
     title: 'നിസ്കാര ട്രാക്കർ',
@@ -124,6 +126,7 @@ export const translations: Record<Language, Record<string, string>> = {
     enableNotifications: 'അറിയിപ്പുകൾ പ്രവർത്തനക്ഷമമാക്കുക',
     notificationEnabled: 'അറിയിപ്പുകൾ പ്രവർത്തനക്ഷമമാക്കി',
     prayerTimeAlert: 'നിസ്കാര സമയം',
+    flutterIntegration: 'ഫ്ലട്ടർ ഏകീകരണം',
   },
   ar: {
     title: 'متتبع الصلاة',
@@ -163,6 +166,7 @@ export const translations: Record<Language, Record<string, string>> = {
     enableNotifications: 'تفعيل الإشعارات',
     notificationEnabled: 'تم تفعيل الإشعارات',
     prayerTimeAlert: 'وقت الصلاة',
+    flutterIntegration: 'تكامل فلاتر',
   },
 };
 
