@@ -10,8 +10,12 @@
 }
 
 body {
-  background-color: #00160D;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: background-color 0.3s ease;
 }
 
 .golden-gradient {
@@ -35,7 +39,7 @@ body {
 
 @keyframes pulse-gold {
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
 
@@ -44,22 +48,38 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideDown {
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 .fade-in {
   animation: fadeIn 0.3s ease-out;
 }
 
 .star-pattern {
-  background-image: radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.03) 1px, transparent 1px),
-                    radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 40px 40px;
 }
 
+.star-pattern-light {
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(0, 90, 60, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 80% 80%, rgba(0, 90, 60, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 40px 40px;
+}
+
+/* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #00160D;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -69,4 +89,47 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #D4AF37;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .flex {
+  /* Maintain flex direction but reverse content alignment */
+}
+
+/* Toggle Switch Animation */
+button {
+  cursor: pointer;
+}
+
+/* Backdrop blur fallback */
+@supports not (backdrop-filter: blur(10px)) {
+  .backdrop-blur-sm {
+    background-opacity: 0.95;
+  }
+}
+
+/* Arabic font optimization */
+[dir="rtl"] {
+  font-family: 'Segoe UI', 'Traditional Arabic', 'Arial', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Tamil/Malayalam font optimization */
+[lang="ta"], [lang="ml"] {
+  font-family: 'Segoe UI', 'Noto Sans Tamil', 'Noto Sans Malayalam', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition-property: background-color, border-color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+/* Prevent transition on initial load */
+.no-transition * {
+  transition: none !important;
 }
